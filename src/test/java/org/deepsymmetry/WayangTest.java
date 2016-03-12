@@ -29,10 +29,17 @@ public class WayangTest
     }
 
     /**
-     * Rigourous Test :-)
+     * Try blasting a frame of pixels to the Push 2.
      */
-    public void testApp()
+    public void testSendFrame()
     {
-        assertTrue( true );
+        Wayang.open();
+        byte[] pixels = new byte[16384];
+        for (int i = 0; i < 16384; i += 4) {
+            pixels[i] = (byte)0xf8;
+            pixels[i+1] = (byte)0x1f;
+        }
+        Wayang.sendFrame(pixels);
+        Wayang.close();
     }
 }

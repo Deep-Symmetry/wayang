@@ -11,7 +11,22 @@ images.
 
 ## Usage
 
-Documentation coming soon!
+Wayang bundles
+[usb4java](http://usb4java.org/quickstart/javax-usb.html) to
+communicate with the Push. For that to work, you need to have
+[libusb](http://libusb.info) installed on your system. If you are on
+Linux it is likely already installed, or you can follow their
+installation instructions. On the Mac, I recommend using
+[Homebrew](http://brew.sh) for all such needs; once it&rsquo;s
+installed, you can simply run `brew install libusb`.
+
+> If you are already using the
+> [Open Lighting Architecture](https://www.openlighting.org/ola/),
+> perhaps through
+> [Afterglow](https://github.com/brunchboy/afterglow#afterglow), then
+> libusb was installed as part of installing OLA.
+
+More documentation coming soon!
 
 ## License
 

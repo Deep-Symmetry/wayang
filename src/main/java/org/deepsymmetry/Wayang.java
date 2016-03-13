@@ -184,11 +184,6 @@ public class Wayang {
     }
 
     /**
-     * The "signal shaping pattern" which must be XORed with pixel data before sending it to the display.
-     */
-    private static final byte[] MASK = new byte[]{(byte) 0xe7, (byte) 0xf3, (byte) 0xe7, (byte) 0xff};
-
-    /**
      * Expand an array of shorts representing eight rows of individual pixel samples into an array of bytes
      * with padding at the end of each row so it takes an even 2,048 bytes, masking the pixel data with the
      * "signal shaping pattern" required by the Push 2 display.

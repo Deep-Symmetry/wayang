@@ -56,6 +56,11 @@ import org.deepsymmetry.Wayang;
 
 ```
 
+The image you get from `Wayang.open()` is 960 pixels wide and 160
+pixels tall, the same as the physical display. These values are also
+available as the constants `Wayang.DISPLAY_WIDTH` and
+`Wayang.DISPLAY_HEIGHT`.
+
 This photo shows the results of running `mvn test` in the project directory:
 
 ![Test display](assets/Test.jpg)

@@ -41,7 +41,9 @@ public class WayangTest
         BufferedImage displayImage = Wayang.open();
         Graphics2D graphics = displayImage.createGraphics();
         BufferedImage logo = ImageIO.read(new File("assets/Deep-Symmetry-Logo.png"));
-        graphics.drawImage(logo, 100, 0, null);
+        graphics.drawImage(logo, Wayang.DISPLAY_WIDTH - logo.getWidth() - 100, 0, null);
+        BufferedImage wayangs = ImageIO.read(new File("assets/Wayang_Pandawa.jpg"));
+        graphics.drawImage(wayangs, 0, 0, 409, Wayang.DISPLAY_HEIGHT, null);
         Wayang.sendFrame();
         Wayang.close();
     }

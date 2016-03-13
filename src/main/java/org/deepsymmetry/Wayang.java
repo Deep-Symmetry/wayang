@@ -63,6 +63,7 @@ public class Wayang {
         }
         if (transferBuffer != null) {
             LibUsb.exit(context);
+            headerBuffer = null;
             transferBuffer = null;
         }
     }

@@ -3,9 +3,11 @@
 A Java library for displaying images on the
 [Ableton Push 2](https://www.ableton.com/en/push/) instrument. The
 project name, which refers to
-[Javanese shadow puppet performances](https://en.wikipedia.org/wiki/Wayang),
+[Javanese shadow puppet artistry](https://en.wikipedia.org/wiki/Wayang),
 was chosen because it ties together the concepts Java, Push, and
 images.
+
+[![Wayang photo](assets/Wayang_Pandawa.jpg)](https://commons.wikimedia.org/wiki/File:Wayang_Pandawa.jpg)
 
 [![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%201.0-blue.svg)](#license)
 
@@ -63,6 +65,10 @@ This photo shows the results of running `mvn test` in the project directory:
 Ableton has released the documentation that enabled the creation of
 this library as its own project on Github,
 [push-interface](https://github.com/Ableton/push-interface).
+
+## Image Credit
+
+Wyang photo by [Gunawan Kartapranata](https://commons.wikimedia.org/wiki/User:Gunkarta), licensed under the [Creative Commons](https://en.wikipedia.org/wiki/en:Creative_Commons) [Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en) license.
 
 ## License
 

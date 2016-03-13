@@ -90,7 +90,8 @@ public class Wayang {
                 if (result != LibUsb.SUCCESS) {
                     throw new LibUsbException("Unable to read device descriptor", result);
                 }
-                if (descriptor.idVendor() == 0x2982 && descriptor.idProduct() == 0x1967) {
+                if (descriptor.bDeviceClass() == LibUsb.CLASS_PER_INTERFACE &&
+                        descriptor.idVendor() == 0x2982 && descriptor.idProduct() == 0x1967) {
                     return device;
                 }
             }

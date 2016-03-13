@@ -1,4 +1,4 @@
-# wayang
+# Wayang
 
 A Java library for displaying images on the
 [Ableton Push 2](https://www.ableton.com/en/push/) instrument. The

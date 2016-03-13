@@ -42,6 +42,26 @@ public class Wayang {
     };
 
     /**
+     * The width of the display, in pixels.
+     */
+    public static final int DISPLAY_WIDTH = 960;
+
+    /**
+     * The height of the display, in pixels.
+     */
+    public static final int DISPLAY_HEIGHT = 160;
+
+    /**
+     * The number of display lines we send in each USB bulk transfer operation.
+     */
+    private static final int LINES_PER_TRANSFER = 8;
+
+    /**
+     * The number of bytes the Push expects to receive for each line of the display.
+     */
+    private static final int BYTES_PER_LINE = 2048;
+
+    /**
      * When we have opened the Push display, this will hold the device handle we used to open it.
      */
     private static DeviceHandle pushHandle = null;
@@ -72,6 +92,7 @@ public class Wayang {
      * Locate the Push 2 in the USB environment.
      *
      * @return the device object representing it, or null if it could not be found.
+     *
      * @throws LibUsbException if there is a problem communicating with the USB environment.
      */
     private static Device findPush() {
@@ -108,6 +129,7 @@ public class Wayang {
      * Opens the Push 2 display interface when the device has been found.
      *
      * @param device the Push 2.
+     *
      * @throws LibUsbException if there is a problem communicating with the USB environment.
      */
     private static void openPushDisplay(Device device) {
@@ -127,7 +149,8 @@ public class Wayang {
         // in the arrangement the Push wants.
         ColorModel colorModel = new DirectColorModel(16, 0x001f, 0x07e0, 0xf800);
         int[] bandMasks = new int[] {0x001f, 0x07e0, 0xf800};
-        WritableRaster raster = WritableRaster.createPackedRaster(DataBuffer.TYPE_USHORT, 960, 160, bandMasks, null);
+        WritableRaster raster = WritableRaster.createPackedRaster(DataBuffer.TYPE_USHORT,
+                DISPLAY_WIDTH, DISPLAY_HEIGHT, bandMasks, null);
         displayImage = new BufferedImage(colorModel, raster, false, null);
     }
 
@@ -165,8 +188,8 @@ public class Wayang {
         }
 
         // Things look promising so allocate our byte buffers
-        transferBuffer = ByteBuffer.allocateDirect(16384);
-        headerBuffer = ByteBuffer.allocateDirect(16);
+        transferBuffer = ByteBuffer.allocateDirect(BYTES_PER_LINE * LINES_PER_TRANSFER);
+        headerBuffer = ByteBuffer.allocateDirect(frameHeader.length);
         headerBuffer.put(frameHeader);
 
         try {
@@ -193,10 +216,10 @@ public class Wayang {
      * @param destination an array into which the split, padded, and masked pixel bytes should be stored
      */
     private static final void maskPixels(short[] pixels, byte[] destination) {
-        for (int y = 0; y < 8; y++) {
-            for (int x = 0; x < 960; x+= 2) {
-                int pixelOffset = (y * 960) + x;
-                int destinationOffset = (y * 2048) + (x * 2);
+        for (int y = 0; y < LINES_PER_TRANSFER; y++) {
+            for (int x = 0; x < DISPLAY_WIDTH; x+= 2) {
+                int pixelOffset = (y * DISPLAY_WIDTH) + x;
+                int destinationOffset = (y * BYTES_PER_LINE) + (x * 2);
                 destination[destinationOffset] = (byte)((pixels[pixelOffset] & 0xff) ^ 0xe7);
                 destination[destinationOffset + 1] = (byte)((pixels[pixelOffset] >>> 8) ^ 0xf3);
                 destination[destinationOffset + 2] = (byte)((pixels[pixelOffset + 1] &0xff) ^ 0xe7);
@@ -221,14 +244,14 @@ public class Wayang {
         if (result != LibUsb.SUCCESS) {
             throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
         }
-        System.out.println(transferred.get() + " header bytes sent");
 
-        // We send 8 lines at a time to the display; allocate buffers big enough to receive them,
+        // We send eight lines at a time to the display; allocate buffers big enough to receive them,
         // expand with the row stride padding, and mask with the signal shaping pattern.
-        short[] pixels = new short[8 * 960];
-        byte[] maskedChunk = new byte[16384];
-        for (int i = 0; i < 20; i++) {
-            displayImage.getRaster().getDataElements(0, i * 8, 960, 8, pixels);
+        short[] pixels = new short[LINES_PER_TRANSFER * DISPLAY_WIDTH];
+        byte[] maskedChunk = new byte[LINES_PER_TRANSFER * BYTES_PER_LINE];
+        for (int i = 0; i < (DISPLAY_HEIGHT / LINES_PER_TRANSFER); i++) {
+            displayImage.getRaster().getDataElements(
+                    0, i * LINES_PER_TRANSFER, DISPLAY_WIDTH, LINES_PER_TRANSFER, pixels);
             maskPixels(pixels, maskedChunk);
             transferBuffer.clear();
             transferBuffer.put(maskedChunk);
@@ -237,8 +260,6 @@ public class Wayang {
             if (result != LibUsb.SUCCESS) {
                 throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
             }
-            System.out.println(transferred.get() + " bytes sent for section " + i);
-
         }
     }
 }

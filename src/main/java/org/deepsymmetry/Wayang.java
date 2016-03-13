@@ -2,11 +2,15 @@ package org.deepsymmetry;
 
 import org.usb4java.*;
 
+import java.awt.image.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 /**
- * Supports drawing images on the Ableton Push 2 graphical display.
+ * Supports drawing images on the Ableton Push 2 graphical display. Uses the excellent documentation Ableton
+ * provided at https://github.com/Ableton/push-interface
+ *
+ * @author James Elliott
  */
 public class Wayang {
 
@@ -30,8 +34,8 @@ public class Wayang {
     /**
      * The header sent before each frame of display pixels.
      */
-    private static final byte[] frameHeader = new byte[] {
-            (byte)0xff, (byte)0xcc, (byte)0xaa, (byte)0x88,
+    private static final byte[] frameHeader = new byte[]{
+            (byte) 0xff, (byte) 0xcc, (byte) 0xaa, (byte) 0x88,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00
@@ -43,10 +47,17 @@ public class Wayang {
     private static DeviceHandle pushHandle = null;
 
     /**
+     * When we have opened the Push display, this image will be where we can draw, and obtain pixel
+     * samples in a compatible format to send to it.
+     */
+    private static BufferedImage displayImage = null;
+
+    /**
      * Close the Push 2 interface if it is open, and shut down our libusb context if it is active.
      */
     public static synchronized void close() {
         if (pushHandle != null) {
+            displayImage = null;
             LibUsb.close(pushHandle);
             pushHandle = null;
         }
@@ -60,7 +71,6 @@ public class Wayang {
      * Locate the Push 2 in the USB environment.
      *
      * @return the device object representing it, or null if it could not be found.
-     *
      * @throws LibUsbException if there is a problem communicating with the USB environment.
      */
     private static Device findPush() {
@@ -73,7 +83,7 @@ public class Wayang {
 
         try {
             // Iterate over all devices and scan for the right one
-            for (Device device: list) {
+            for (Device device : list) {
                 DeviceDescriptor descriptor = new DeviceDescriptor();
                 result = LibUsb.getDeviceDescriptor(device, descriptor);
                 if (result != LibUsb.SUCCESS) {
@@ -96,7 +106,6 @@ public class Wayang {
      * Opens the Push 2 display interface when the device has been found.
      *
      * @param device the Push 2.
-     *
      * @throws LibUsbException if there is a problem communicating with the USB environment.
      */
     private static void openPushDisplay(Device device) {
@@ -111,6 +120,13 @@ public class Wayang {
             throw new LibUsbException("Unable to claim interface 0 of Push 2 device", result);
         }
         pushHandle = handle;
+
+        // Create the buffered image which we can draw to, and which will convert that into pixel data
+        // in the arrangement the Push wants.
+        ColorModel colorModel = new DirectColorModel(16, 0x001f, 0x07e0, 0xf800);
+        int[] bandMasks = new int[] {0x001f, 0x07e0, 0xf800};
+        WritableRaster raster = WritableRaster.createPackedRaster(DataBuffer.TYPE_USHORT, 960, 160, bandMasks, null);
+        displayImage = new BufferedImage(colorModel, raster, false, null);
     }
 
     /**
@@ -122,10 +138,13 @@ public class Wayang {
     /**
      * Set up a connection to libusb, find the Push 2, and open its display interface.
      *
-     * @throws LibUsbException if there is a problem communicating with the USB environment.
+     * @return an image in which anything drawn will be sent to the Push 2 display whenever you call
+     *         the sendFrame method.
+     *
+     * @throws LibUsbException       if there is a problem communicating with the USB environment.
      * @throws IllegalStateException if no Push 2 can be found.
      */
-    public static synchronized void open() {
+    public static synchronized BufferedImage open() {
 
         // Set up hook to close gracefully at shutdown, if we have not already done so.
         if (!shutdownHookInstalled) {
@@ -159,51 +178,65 @@ public class Wayang {
             close();
             throw e;
         }
+
+        return displayImage;
     }
 
     /**
      * The "signal shaping pattern" which must be XORed with pixel data before sending it to the display.
      */
-    private static final byte[] MASK = new byte[] { (byte)0xe7, (byte)0xf3, (byte)0xe7, (byte)0xff };
+    private static final byte[] MASK = new byte[]{(byte) 0xe7, (byte) 0xf3, (byte) 0xe7, (byte) 0xff};
 
     /**
-     * Mask an array of pixels with the "signal shaping pattern" required by the Push 2 display.
+     * Expand an array of shorts representing eight rows of individual pixel samples into an array of bytes
+     * with padding at the end of each row so it takes an even 2,048 bytes, masking the pixel data with the
+     * "signal shaping pattern" required by the Push 2 display.
      *
-     * @param pixels      the unmasked pixel data
-     * @param destination an array of equal size in which the masked pixels should be stored
+     * @param pixels      the unmasked, un-padded pixel data, with one pixel in each short
+     * @param destination an array into which the split, padded, and masked pixel bytes should be stored
      */
-    private static final void maskPixels(byte[] pixels, byte[] destination) {
-        for (int i = 0; i < pixels.length; i++) {
-            destination[i] = (byte)(pixels[i] ^ MASK[i % 4]);
+    private static final void maskPixels(short[] pixels, byte[] destination) {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 960; x+= 2) {
+                int pixelOffset = (y * 960) + x;
+                int destinationOffset = (y * 2048) + (x * 2);
+                destination[destinationOffset] = (byte)((pixels[pixelOffset] & 0xff) ^ 0xe7);
+                destination[destinationOffset + 1] = (byte)((pixels[pixelOffset] >>> 8) ^ 0xf3);
+                destination[destinationOffset + 2] = (byte)((pixels[pixelOffset + 1] &0xff) ^ 0xe7);
+                destination[destinationOffset + 3] = (byte)((pixels[pixelOffset + 1] >>> 8) ^ 0xff);
+            }
         }
     }
 
     /**
-     * Send a frame of data to the display.
+     * Send a frame of pixels, corresponding to whatever has been drawn in the image returned by open(),
+     * to the display.
      *
-     * @param pixels the pixel data.
-     *
-     * @throws LibUsbException if there is a problem communicating.
+     * @throws LibUsbException       if there is a problem communicating.
      * @throws IllegalStateException if the Push 2 has not been opened.
      */
-    public static void sendFrame(byte[] pixels) {
+    public static void sendFrame() {
         if (transferBuffer == null) {
             throw new IllegalStateException("Push 2 device has not been opened");
         }
         IntBuffer transferred = IntBuffer.allocate(1);
-        int result = LibUsb.bulkTransfer(pushHandle, (byte)0x01, headerBuffer, transferred, 1000);
+        int result = LibUsb.bulkTransfer(pushHandle, (byte) 0x01, headerBuffer, transferred, 1000);
         if (result != LibUsb.SUCCESS) {
             throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
         }
         System.out.println(transferred.get() + " header bytes sent");
 
+        // We send 8 lines at a time to the display; allocate buffers big enough to receive them,
+        // expand with the row stride padding, and mask with the signal shaping pattern.
+        short[] pixels = new short[8 * 960];
         byte[] maskedChunk = new byte[16384];
         for (int i = 0; i < 20; i++) {
+            displayImage.getRaster().getDataElements(0, i * 8, 960, 8, pixels);
             maskPixels(pixels, maskedChunk);
             transferBuffer.clear();
             transferBuffer.put(maskedChunk);
             transferred.clear();
-            result = LibUsb.bulkTransfer(pushHandle, (byte)0x01, transferBuffer, transferred, 1000);
+            result = LibUsb.bulkTransfer(pushHandle, (byte) 0x01, transferBuffer, transferred, 1000);
             if (result != LibUsb.SUCCESS) {
                 throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
             }

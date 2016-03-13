@@ -26,7 +26,43 @@ installed, you can simply run `brew install libusb`.
 > [Afterglow](https://github.com/brunchboy/afterglow#afterglow), then
 > libusb was installed as part of installing OLA.
 
-More documentation coming soon!
+We are in the process of obtaining a group ID so we can deploy Wayang
+to Maven Central, which will make it extremely easy to use from Java
+and Clojure. This section will be updated with instructions how to do
+that in the next day or two, once the request gets processed.
+
+Once you have the Wayang library added as a dependency, all you need
+to do to draw to the Push display is:
+
+```java
+import org.deepsymmetry.Wayang;
+
+// ...
+
+        BufferedImage displayImage = Wayang.open();
+        Graphics2D graphics = displayImage.createGraphics();
+
+// Perform whatever Java2D drawing operations you'd like to using the graphics object,
+// then, whenever you want to update what is showing on the Push:
+
+        Wayang.sendFrame();
+
+// If you are done talking to it, you can close, as below. Otherwise, the library cleans
+// up for you when the JVM exits.
+
+        Wayang.close();
+
+```
+
+This photo shows the results of running `mvn test` in the project directory:
+
+![Test display](assets/Test.jpg)
+
+## Push Interface Documentation
+
+Ableton has released the documentation that enabled the creation of
+this library as its own project on Github,
+[push-interface](https://github.com/Ableton/push-interface).
 
 ## License
 

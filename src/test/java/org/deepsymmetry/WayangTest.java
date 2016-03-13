@@ -4,6 +4,12 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Unit test for Wayang.
  */
@@ -29,17 +35,14 @@ public class WayangTest
     }
 
     /**
-     * Try blasting a frame of pixels to the Push 2.
+     * Try drawing a picture on the Push 2.
      */
-    public void testSendFrame()
-    {
-        Wayang.open();
-        byte[] pixels = new byte[16384];
-        for (int i = 0; i < 16384; i += 4) {
-            pixels[i] = (byte)0xf8;
-            pixels[i+1] = (byte)0x1f;
-        }
-        Wayang.sendFrame(pixels);
+    public void testSendFrame() throws IOException {
+        BufferedImage displayImage = Wayang.open();
+        Graphics2D graphics = displayImage.createGraphics();
+        BufferedImage logo = ImageIO.read(new File("assets/Deep-Symmetry-Logo.png"));
+        graphics.drawImage(logo, 100, 0, null);
+        Wayang.sendFrame();
         Wayang.close();
     }
 }

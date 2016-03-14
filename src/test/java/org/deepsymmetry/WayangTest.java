@@ -38,7 +38,14 @@ public class WayangTest
      * Try drawing a picture on the Push 2.
      */
     public void testSendFrame() throws IOException {
-        BufferedImage displayImage = Wayang.open();
+        BufferedImage displayImage;
+        try {
+            displayImage = Wayang.open();
+        }
+        catch (IllegalStateException e) {
+            System.out.println("Unable to send test frame, is Push 2 connected? " + e.getMessage());
+            return;
+        }
         Graphics2D graphics = displayImage.createGraphics();
         BufferedImage logo = ImageIO.read(new File("assets/Deep-Symmetry-Logo.png"));
         graphics.drawImage(logo, Wayang.DISPLAY_WIDTH - logo.getWidth() - 100, 0, null);

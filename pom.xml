@@ -4,7 +4,7 @@
 
     <groupId>org.deepsymmetry</groupId>
     <artifactId>wayang</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <packaging>jar</packaging>
 
     <name>wayang</name>

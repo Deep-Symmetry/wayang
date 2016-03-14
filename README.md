@@ -28,10 +28,16 @@ installed, you can simply run `brew install libusb`.
 > [Afterglow](https://github.com/brunchboy/afterglow#afterglow), then
 > libusb was installed as part of installing OLA.
 
-We are in the process of obtaining a group ID so we can deploy Wayang
-to Maven Central, which will make it extremely easy to use from Java
-and Clojure. This section will be updated with instructions how to do
-that in the next day or two, once the request gets processed.
+Wayang is available through Maven Central, so to use it in your Maven
+project, all you need is to include the appropriate dependency.
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.deepsymmetry/wayang/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.deepsymmetry/wayang)
+
+Click the **maven central** badge above to view the repository entry
+for Wayang. The proper format for including the latest release as a
+dependency in a variety of tools, including Leiningen if you are using
+Wayang from Clojure, can be found in the **Dependency Information**
+section.
 
 Once you have the Wayang library added as a dependency, all you need
 to do to draw to the Push display is:

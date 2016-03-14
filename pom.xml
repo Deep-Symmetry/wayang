@@ -4,11 +4,39 @@
 
     <groupId>org.deepsymmetry</groupId>
     <artifactId>wayang</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>wayang</name>
+    <description>A Java library for displaying images on the Ableton Push 2</description>
     <url>https://github.com/brunchboy/wayang</url>
+
+    <licenses>
+      <license>
+        <name>Eclipse Public License 1.0</name>
+        <url>http://opensource.org/licenses/eclipse-1.0.php</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+
+    <scm>
+      <url>https://github.com/DerekCook/CoreMidi4J.git</url>
+    </scm>
+
+    <developers>
+      <developer>
+        <id>brunchboy</id>
+        <name>James Elliott</name>
+        <email>james@deepsymmetry.org</email>
+        <organization>Deep Symmetry, LLC</organization>
+        <organizationUrl>http://deepsymmetry.org</organizationUrl>
+        <roles>
+	  <role>Project-Creator</role>
+	  <role>Developer</role>
+        </roles>
+        <timezone>-6</timezone>
+      </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

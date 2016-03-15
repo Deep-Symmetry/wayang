@@ -11,9 +11,9 @@ images.
 
 [![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%201.0-blue.svg)](#license)
 
-## Usage
+## Dependencies
 
-Wayang bundles
+Wayang uses
 [usb4java](http://usb4java.org/quickstart/javax-usb.html) to
 communicate with the Push. For that to work, you need to have
 [libusb](http://libusb.info) installed on your system. If you are on
@@ -28,6 +28,8 @@ installed, you can simply run `brew install libusb`.
 > [Afterglow](https://github.com/brunchboy/afterglow#afterglow), then
 > libusb was installed as part of installing OLA.
 
+## Installing
+
 Wayang is available through Maven Central, so to use it in your Maven
 project, all you need is to include the appropriate dependency.
 
@@ -38,6 +40,15 @@ for Wayang. The proper format for including the latest release as a
 dependency in a variety of tools, including Leiningen if you are using
 Wayang from Clojure, can be found in the **Dependency Information**
 section.
+
+If you want to manually install Wayang, you can download the library
+from the [releases](https://github.com/brunchboy/wayang/releases) page
+and put it on your project&rsquo;s class path, but you will then
+also be responsible for installing
+[usb4java](http://usb4java.org/quickstart/javax-usb.html) and any
+transitive dependencies it might have.
+
+## Usage
 
 Once you have the Wayang library added as a dependency, all you need
 to do to draw to the Push display is:

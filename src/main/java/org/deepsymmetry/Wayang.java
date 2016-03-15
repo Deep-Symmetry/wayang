@@ -162,6 +162,7 @@ public class Wayang {
 
     /**
      * Set up a connection to libusb, find the Push 2, and open its display interface.
+     * If the display is already open, simply returns the existing buffered image.
      *
      * @return an image in which anything drawn will be sent to the Push 2 display whenever you call
      *         the sendFrame method.
@@ -181,27 +182,29 @@ public class Wayang {
             shutdownHookInstalled = true;
         }
 
-        // Try initializing libusb
-        int result = LibUsb.init(context);
-        if (result != LibUsb.SUCCESS) {
-            throw new LibUsbException("Unable to initialize libusb", result);
-        }
-
-        // Things look promising so allocate our byte buffers
-        transferBuffer = ByteBuffer.allocateDirect(BYTES_PER_LINE * LINES_PER_TRANSFER);
-        headerBuffer = ByteBuffer.allocateDirect(frameHeader.length);
-        headerBuffer.put(frameHeader);
-
-        try {
-            Device device = findPush();
-            if (device != null) {
-                openPushDisplay(device);
-            } else {
-                throw new IllegalStateException("Unable to find Ableton Push 2 display device");
+        if (displayImage == null) {  // We are not already open
+            // Try initializing libusb
+            int result = LibUsb.init(context);
+            if (result != LibUsb.SUCCESS) {
+                throw new LibUsbException("Unable to initialize libusb", result);
             }
-        } catch (RuntimeException e) {
-            close();
-            throw e;
+
+            // Things look promising so allocate our byte buffers
+            transferBuffer = ByteBuffer.allocateDirect(BYTES_PER_LINE * LINES_PER_TRANSFER);
+            headerBuffer = ByteBuffer.allocateDirect(frameHeader.length);
+            headerBuffer.put(frameHeader);
+
+            try {
+                Device device = findPush();
+                if (device != null) {
+                    openPushDisplay(device);
+                } else {
+                    throw new IllegalStateException("Unable to find Ableton Push 2 display device");
+                }
+            } catch (RuntimeException e) {
+                close();
+                throw e;
+            }
         }
 
         return displayImage;
@@ -215,7 +218,7 @@ public class Wayang {
      * @param pixels      the unmasked, un-padded pixel data, with one pixel in each short
      * @param destination an array into which the split, padded, and masked pixel bytes should be stored
      */
-    private static final void maskPixels(short[] pixels, byte[] destination) {
+    private static void maskPixels(short[] pixels, byte[] destination) {
         for (int y = 0; y < LINES_PER_TRANSFER; y++) {
             for (int x = 0; x < DISPLAY_WIDTH; x+= 2) {
                 int pixelOffset = (y * DISPLAY_WIDTH) + x;

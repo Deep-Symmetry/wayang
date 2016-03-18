@@ -43,10 +43,14 @@ section.
 
 If you want to manually install Wayang, you can download the library
 from the [releases](https://github.com/brunchboy/wayang/releases) page
-and put it on your project&rsquo;s class path, but you will then
-also be responsible for installing
-[usb4java](http://usb4java.org/quickstart/javax-usb.html) and any
-transitive dependencies it might have.
+and put it on your project&rsquo;s class path. Be sure you get the
+right version: the much larger file whose name ends
+`-jar-with-dependencies.jar` contains everything you need to
+communicate with `libusb` from Java. The smaller Wayang jar is for use
+with dependency management systems like Maven. You can download that
+one if you&rsquo;d like, but you will then also be responsible for
+installing [usb4java](http://usb4java.org/quickstart/javax-usb.html)
+and any transitive dependencies it might have.
 
 ## Usage
 

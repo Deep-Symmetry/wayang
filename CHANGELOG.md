@@ -6,7 +6,21 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
-Nothing so far.
+### Added
+
+- When packaging, an überjar containing all transitive dependencies is
+  also built, to make life easier for people who want to use Wayang
+  without Maven, Leiningen, or another dependency management system.
+- The test phase now validates that all classes referenced are valid
+  for the JDK version against which the library is being built, even
+  when it is built using a more recent JDK.
+
+### Changed
+
+- Now builds class files using the JDK 1.6 (Java 6) format and
+  features. Previous releases built against JDK 1.5, but there was no
+  point in staying that far back, since `usb4java` is built for JDK
+  1.6.
 
 ## [0.1.3] - 2016-03-15
 

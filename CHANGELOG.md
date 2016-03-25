@@ -6,8 +6,15 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
+Nothing so far.
+
+## [0.1.4] - 2016-03-24
+
 ### Added
 
+- Incorporated an [Animated GIF Writer](http://elliot.kroo.net/software/java/GifSequenceWriter/)
+  to make it easy to capture interfaces that are being rendered on the
+  push, to facilitate great online documentation.
 - When packaging, an überjar containing all transitive dependencies is
   also built, to make life easier for people who want to use Wayang
   without Maven, Leiningen, or another dependency management system.
@@ -54,6 +61,7 @@ This change log follows the conventions of
 - Initial Public Release
 
 
-[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.3...HEAD
+[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/brunchboy/wayang/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/brunchboy/wayang/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/brunchboy/wayang/compare/v0.1.1...v0.1.2

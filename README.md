@@ -86,15 +86,54 @@ This photo shows the results of running `mvn test` in the project directory:
 
 ![Test display](assets/Test.jpg)
 
+## Capturing Your Interface
+
+You can save animated GIF files to provide highly meaningful documentation for
+your user interfaces, thanks to an embedded version of Elliot Kroo&rsquo;s
+[GifSequenceWriter](http://elliot.kroo.net/software/java/GifSequenceWriter/).
+To do that, just call:
+
+```java
+import org.deepsymmetry.GifSequenceWriter;
+
+// ...
+
+    ImageOutputStream output =
+      new FileImageOutputStream(new File("out.gif"));
+
+    // Pass in the displayImage buffer that Wayang.open() gave you, the
+    // interval in milliseconds at which you update the display, and
+    // whether you want the animation to loop:
+    GifSequenceWriter writer =
+      new GifSequenceWriter(output, displayImage, 50, true);
+
+// Then whenever you are calling Wayang.SendFrame(), also call:
+
+        writer.writeToSequence(displayImage);
+
+// When you are done recording, call:
+
+        writer.close();
+        output.close();
+
+```
+
+Here is an example recording from [Afterglow](https://github.com/brunchboy/afterglow#afterglow)&rsquo;s
+Push 2 interface:
+
+![Test display](assets/Example.gif)
+
 ## Push Interface Documentation
 
 Ableton has released the documentation that enabled the creation of
 this library as its own project on Github,
 [push-interface](https://github.com/Ableton/push-interface).
 
-## Image Credit
+## Credits
 
-Wyang photo by [Gunawan Kartapranata](https://commons.wikimedia.org/wiki/User:Gunkarta), licensed under the [Creative Commons](https://en.wikipedia.org/wiki/en:Creative_Commons) [Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en) license.
+Wyang photo by [Gunawan Kartapranata](https://commons.wikimedia.org/wiki/User:Gunkarta), used under the [Creative Commons](https://en.wikipedia.org/wiki/en:Creative_Commons) [Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en) license.
+
+GifSequenceWriter by [Elliot Kroo](http://elliot.kroo.net/software/java/GifSequenceWriter/), used under the [Creative Commons](https://en.wikipedia.org/wiki/en:Creative_Commons) [Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).
 
 ## License
 

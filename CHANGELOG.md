@@ -12,8 +12,9 @@ Nothing so far.
 
 ### Fixed
 
-- Finding the proper device to open in Windows, thanks to @rsu-ableton
-  for identifying the problem and explaining the underlying issue.
+- Finding the proper device to open in Windows, thanks to
+  [rsu-ableton](https://github.com/rsu-ableton) for identifying the
+  problem and explaining the underlying issue.
 
 ## [0.1.4] - 2016-03-24
 

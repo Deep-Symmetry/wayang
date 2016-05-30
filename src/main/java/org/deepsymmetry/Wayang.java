@@ -95,7 +95,7 @@ public class Wayang {
      *
      * @throws LibUsbException if there is a problem communicating with the USB environment.
      */
-    private static Device findPush() {
+    private static DeviceHandle findPush() {
         // Read the USB device list
         DeviceList list = new DeviceList();
         int result = LibUsb.getDeviceList(null, list);
@@ -113,7 +113,12 @@ public class Wayang {
                 }
                 if (descriptor.bDeviceClass() == LibUsb.CLASS_PER_INTERFACE &&
                         descriptor.idVendor() == 0x2982 && descriptor.idProduct() == 0x1967) {
-                    return device;
+
+                    DeviceHandle handle = new DeviceHandle();
+                    result = LibUsb.open(device, handle);
+                    if (result == LibUsb.SUCCESS) {
+                        return handle;
+                    }  // Just ignore failures; Windows has spurious, non-working entries which match but fail to open
                 }
             }
         } finally {
@@ -126,19 +131,14 @@ public class Wayang {
     }
 
     /**
-     * Opens the Push 2 display interface when the device has been found.
+     * Opens the Push 2 display interface when the device has been found and opened.
      *
-     * @param device the Push 2.
+     * @param handle the opened Push 2 device.
      *
      * @throws LibUsbException if there is a problem communicating with the USB environment.
      */
-    private static void openPushDisplay(Device device) {
-        DeviceHandle handle = new DeviceHandle();
-        int result = LibUsb.open(device, handle);
-        if (result != LibUsb.SUCCESS) {
-            throw new LibUsbException("Unable to open Push 2 USB device", result);
-        }
-        result = LibUsb.claimInterface(handle, 0);
+    private static void openPushDisplay(DeviceHandle handle) {
+        int result = LibUsb.claimInterface(handle, 0);
         if (result < 0) {
             LibUsb.close(handle);
             throw new LibUsbException("Unable to claim interface 0 of Push 2 device", result);
@@ -195,9 +195,9 @@ public class Wayang {
             headerBuffer.put(frameHeader);
 
             try {
-                Device device = findPush();
-                if (device != null) {
-                    openPushDisplay(device);
+                DeviceHandle handle = findPush();
+                if (handle != null) {
+                    openPushDisplay(handle);
                 } else {
                     throw new IllegalStateException("Unable to find Ableton Push 2 display device");
                 }

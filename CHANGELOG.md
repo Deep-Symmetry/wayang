@@ -8,6 +8,13 @@ This change log follows the conventions of
 
 Nothing so far.
 
+## [0.1.5] - 2016-05-30
+
+### Fixed
+
+- Finding the proper device to open in Windows, thanks to @rsu-ableton
+  for identifying the problem and explaining the underlying issue.
+
 ## [0.1.4] - 2016-03-24
 
 ### Added

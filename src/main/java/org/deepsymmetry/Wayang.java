@@ -83,7 +83,12 @@ public class Wayang {
     public static synchronized void close() {
         if (pushHandle != null) {
             displayImage = null;
-            LibUsb.handleEvents(context);
+
+            // handle all remaining events
+            int result = LibUsb.handleEventsTimeout(null, 250000);
+            if (result != LibUsb.SUCCESS)
+                throw new LibUsbException("Unable to handle events", result);
+
             LibUsb.close(pushHandle);
             pushHandle = null;
         }

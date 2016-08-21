@@ -8,6 +8,19 @@ This change log follows the conventions of
 
 Nothing so far.
 
+## [0.1.6] - 2016-08-20
+
+### Added
+
+- Support for sending frames asynchronously for higher frame rates,
+  thanks to @cansik in #4.
+
+### Changed
+
+- Even when sending frames synchronously, performance is improved by
+  sending as many lines as possible in one operation.
+
+
 ## [0.1.5] - 2016-05-30
 
 ### Fixed
@@ -69,7 +82,8 @@ Nothing so far.
 - Initial Public Release
 
 
-[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.5...HEAD
+[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/brunchboy/wayang/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/brunchboy/wayang/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/brunchboy/wayang/compare/v0.1.3...v0.1.4
 [0.1.3]: https://github.com/brunchboy/wayang/compare/v0.1.2...v0.1.3

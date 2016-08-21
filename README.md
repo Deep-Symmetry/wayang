@@ -70,6 +70,10 @@ import org.deepsymmetry.Wayang;
 
         Wayang.sendFrame();
 
+// If you want to maximize your frame rate, you can also send frames asynchronously:
+
+        Wayang.sendFrameAsync();
+
 // If you are done talking to it, you can close, as below. Otherwise, the library cleans
 // up for you when the JVM exits.
 

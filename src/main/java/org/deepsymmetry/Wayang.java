@@ -86,6 +86,7 @@ public class Wayang {
             } catch (InterruptedException e) {
                 System.err.println("Interrupted waiting for event handling thread to abort.");
             }
+            eventThread = null;
         }
 
         if (pushHandle != null) {
@@ -251,7 +252,7 @@ public class Wayang {
      * @throws LibUsbException       if there is a problem communicating.
      * @throws IllegalStateException if the Push 2 has not been opened.
      */
-    public static void sendFrame() {
+    public static synchronized void sendFrame() {
         if (transferBuffer == null) {
             throw new IllegalStateException("Push 2 device has not been opened");
         }
@@ -301,7 +302,7 @@ public class Wayang {
      * @throws LibUsbException       if there is a problem communicating.
      * @throws IllegalStateException if the Push 2 has not been opened.
      */
-    public static void sendFrameAsync() {
+    public static synchronized void sendFrameAsync() {
         if (transferBuffer == null) {
             throw new IllegalStateException("Push 2 device has not been opened.");
         }

@@ -6,7 +6,11 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
-Nothing so far.
+### Fixed
+
+- Improved cleanup when closing.
+- Synchronized more methods to avoid potential race conditions between
+  sending asynchronous frames, and sending frames when partially open.
 
 ## [0.1.6] - 2016-08-20
 

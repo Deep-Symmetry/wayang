@@ -54,7 +54,7 @@ public class Wayang {
     /**
      * The number of display lines we send in each USB bulk transfer operation.
      */
-    private static final int LINES_PER_TRANSFER = 8;
+    private static final int LINES_PER_TRANSFER = 160;
 
     /**
      * The number of bytes the Push expects to receive for each line of the display.
@@ -73,11 +73,22 @@ public class Wayang {
     private static BufferedImage displayImage = null;
 
     /**
+     * Transfer object for asynchronous calls.
+     */
+    private static Transfer transfer = null;
+
+    /**
      * Close the Push 2 interface if it is open, and shut down our libusb context if it is active.
      */
     public static synchronized void close() {
         if (pushHandle != null) {
             displayImage = null;
+
+            // handle all remaining events
+            int result = LibUsb.handleEventsTimeout(null, 250000);
+            if (result != LibUsb.SUCCESS)
+                throw new LibUsbException("Unable to handle events", result);
+
             LibUsb.close(pushHandle);
             pushHandle = null;
         }
@@ -264,5 +275,52 @@ public class Wayang {
                 throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
             }
         }
+    }
+
+    /**
+     * Send a frame of pixels async, corresponding to whatever has been drawn in the image returned by open(),
+     * to the display.
+     *
+     * @throws LibUsbException       if there is a problem communicating.
+     * @throws IllegalStateException if the Push 2 has not been opened.
+     */
+    public static void sendFrameAsync() {
+        if (transferBuffer == null) {
+            throw new IllegalStateException("Push 2 device has not been opened");
+        }
+        IntBuffer transferred = IntBuffer.allocate(1);
+        transfer = LibUsb.allocTransfer();
+        LibUsb.fillBulkTransfer(transfer, pushHandle, (byte) 0x01, headerBuffer, LibUsb::freeTransfer,  null, 1000);
+
+        int result = LibUsb.submitTransfer(transfer);
+        if (result != LibUsb.SUCCESS) {
+            throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
+        }
+
+        // We send 8 lines at a time to the display; allocate buffers big enough to receive them,
+        // expand with the row stride padding, and mask with the signal shaping pattern.
+        short[] pixels = new short[LINES_PER_TRANSFER * DISPLAY_WIDTH];
+        byte[] maskedChunk = new byte[LINES_PER_TRANSFER * BYTES_PER_LINE];
+        for (int i = 0; i < (DISPLAY_HEIGHT / LINES_PER_TRANSFER); i++) {
+            displayImage.getRaster().getDataElements(
+                    0, i * LINES_PER_TRANSFER, DISPLAY_WIDTH, LINES_PER_TRANSFER, pixels);
+            maskPixels(pixels, maskedChunk);
+            transferBuffer.clear();
+            transferBuffer.put(maskedChunk);
+            transferred.clear();
+
+            transfer = LibUsb.allocTransfer();
+            LibUsb.fillBulkTransfer(transfer, pushHandle, (byte) 0x01, transferBuffer, LibUsb::freeTransfer, null, 1000);
+            result = LibUsb.submitTransfer(transfer);
+
+            if (result != LibUsb.SUCCESS) {
+                throw new LibUsbException("Transfer of frame header to Push 2 display failed", result);
+            }
+        }
+
+        // handle events
+        result = LibUsb.handleEventsTimeout(null, 250000);
+        if (result != LibUsb.SUCCESS)
+            throw new LibUsbException("Unable to handle events", result);
     }
 }

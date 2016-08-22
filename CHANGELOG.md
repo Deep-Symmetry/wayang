@@ -6,6 +6,10 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
+Nothing so far.
+
+## [0.1.7] - 2016-08-21
+
 ### Fixed
 
 - Improved cleanup when closing.
@@ -86,7 +90,8 @@ This change log follows the conventions of
 - Initial Public Release
 
 
-[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.6...HEAD
+[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.7...HEAD
+[0.1.7]: https://github.com/brunchboy/wayang/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/brunchboy/wayang/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/brunchboy/wayang/compare/v0.1.4...v0.1.5
 [0.1.4]: https://github.com/brunchboy/wayang/compare/v0.1.3...v0.1.4

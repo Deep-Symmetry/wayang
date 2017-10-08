@@ -151,6 +151,8 @@ public class GifSequenceWriter {
     /**
      * Close this GifSequenceWriter object. This does not close the underlying
      * stream, just finishes off the GIF.
+     *
+     * @throws IOException if there is a problem writing the last bytes.
      */
     public void close() throws IOException {
         gifWriter.endWriteSequence();
@@ -197,14 +199,13 @@ public class GifSequenceWriter {
     }
 
     /**
-     public GifSequenceWriter(
-     BufferedOutputStream outputStream,
-     int imageType,
-     int timeBetweenFramesMS,
-     boolean loopContinuously) {
-
+     * Support invocation from the command line; provide a list of input file names, followed by a single output
+     * file name.
+     *
+     * @param args the names of the image files to be combined into a GIF sequence, folloewd by the output file name.
+     *
+     * @throws Exception if there is a problem reading the inputs or writing the output.
      */
-
     public static void main(String[] args) throws Exception {
         if (args.length > 1) {
             // grab the output image type from the first image in the sequence

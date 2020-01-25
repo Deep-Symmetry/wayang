@@ -1,0 +1,81 @@
+name: Create library jar
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  initial_description: |
+    :construction: This is pre-release code for people who want to help test [what is going into the next release](https://github.com/Deep-Symmetry/wayang/blob/master/CHANGELOG.md).
+
+    > Don’t download this if you aren’t comfortable testing code while it is under active development! Instead, look at the [latest release](https:///github.com/Deep-Symmetry/wayang/releases/latest).
+
+    Please note that since it’s a snapshot release, the library jar below (you may need to click to expand the Assets) will change frequently—whenever new code is pushed to the project—so you will want to _download the latest version every time you work with it_.
+
+jobs:
+  build_jar:
+    name: Build library jar
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+
+      - name: Determine release tag, library jar name, and snapshot status
+        run: |
+          PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          RELEASE_TAG="v$PROJECT_VERSION"
+          HUMAN_VERSION=${PROJECT_VERSION/SNAPSHOT/Preview}
+          echo "::set-env name=release_tag::$RELEASE_TAG"
+          echo "::set-env name=release_name::$PROJECT_VERSION"
+          echo "::set-env name=built_name::wayang-$PROJECT_VERSION.jar"
+          echo "::set-env name=artifact_name::wayang-$HUMAN_VERSION.jar"
+          if [[ $RELEASE_TAG =~ .*-SNAPSHOT ]]
+          then
+            echo "::set-env name=release_snapshot::true"
+          else
+            echo "::set-env name=release_snapshot::false"
+          fi
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-mvn-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-mvn-
+
+      - name: Install dependencies and compile
+        run: mvn compile
+
+      - name: Build library jar
+        run: |
+          mvn package
+          mv target/${built_name} ./${artifact_name}
+
+      - name: Upload library jar
+        if: success()
+        uses: Xotl/cool-github-releases@v1
+        with:
+          mode: update
+          tag_name: ${{ env.release_tag }}
+          release_name: ${{ env.release_name }}
+          isPrerelease: true
+          replace_assets: ${{ env.release_snapshot }}
+          assets: ${{ env.artifact_name }}
+          github_token: ${{ github.token }}
+          initial_mrkdwn: ${{ env.initial_description }}
+
+  succeed_if_skipped:
+    name: Skipping CI
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Placate GitHub Actions
+        run: echo "CI skipped but want action to succeed anyway."

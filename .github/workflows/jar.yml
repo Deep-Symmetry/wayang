@@ -55,7 +55,7 @@ jobs:
 
       - name: Build library jar
         run: |
-          mvn package
+          mvn package -DskipTests  # Can't test on GitHub, libusb won't load, and no Push connected!
           mv target/${built_name} ./${artifact_name}
 
       - name: Upload library jar

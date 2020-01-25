@@ -90,7 +90,7 @@
                     <configuration>
                         <archive>
                             <manifestEntries>
-                                <Automatic-Module-Name>org.deepsymmetry.beatlink</Automatic-Module-Name>
+                                <Automatic-Module-Name>org.deepsymmetry.wayang</Automatic-Module-Name>
                             </manifestEntries>
                         </archive>
                     </configuration>

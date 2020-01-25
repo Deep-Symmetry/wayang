@@ -6,7 +6,10 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
-Nothing so far.
+### Added
+
+- Assigned a stable automatic module name so this project can safely
+  be used as a dependency in modular Java projects.
 
 ## [0.1.7] - 2016-08-21
 

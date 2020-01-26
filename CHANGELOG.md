@@ -6,10 +6,22 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
+Nothing so far.
+
+## [0.1.8] - 2020-01-26
+
+### Fixed
+
+- Consistently use a single context for interacting with `usb4java`.
+
 ### Added
 
 - Assigned a stable automatic module name so this project can safely
   be used as a dependency in modular Java projects.
+
+### Changed
+
+- Updated to latest release of `usb4java`.
 
 ## [0.1.7] - 2016-08-21
 
@@ -93,7 +105,8 @@ This change log follows the conventions of
 - Initial Public Release
 
 
-[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.7...HEAD
+[unreleased]: https://github.com/brunchboy/wayang/compare/v0.1.8...HEAD
+[0.1.8]: https://github.com/brunchboy/wayang/compare/v0.1.7...v0.1.8
 [0.1.7]: https://github.com/brunchboy/wayang/compare/v0.1.6...v0.1.7
 [0.1.6]: https://github.com/brunchboy/wayang/compare/v0.1.5...v0.1.6
 [0.1.5]: https://github.com/brunchboy/wayang/compare/v0.1.4...v0.1.5

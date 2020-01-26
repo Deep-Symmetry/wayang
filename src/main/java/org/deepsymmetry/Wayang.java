@@ -112,7 +112,7 @@ public class Wayang {
     private static DeviceHandle findPush() {
         // Read the USB device list
         DeviceList list = new DeviceList();
-        int result = LibUsb.getDeviceList(null, list);
+        int result = LibUsb.getDeviceList(context, list);
         if (result < 0) {
             throw new LibUsbException("Unable to get device list", result);
         }

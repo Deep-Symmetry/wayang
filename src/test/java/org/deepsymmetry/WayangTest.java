@@ -44,6 +44,7 @@ public class WayangTest
         }
         catch (IllegalStateException e) {
             System.out.println("Unable to send test frame, is Push 2 connected? " + e.getMessage());
+            e.printStackTrace();
             return;
         }
         Graphics2D graphics = displayImage.createGraphics();

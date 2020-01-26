@@ -143,7 +143,7 @@ GifSequenceWriter by [Elliot Kroo](http://elliot.kroo.net/software/java/GifSeque
 
 <img align="right" alt="Deep Symmetry" src="assets/DS-logo-bw-200-padded-left.png">
 
-Copyright © 2016 [Deep Symmetry, LLC](http://deepsymmetry.org)
+Copyright © 2016–2020 [Deep Symmetry, LLC](http://deepsymmetry.org)
 
 Distributed under the
 [Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php).

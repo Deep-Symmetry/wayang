@@ -79,6 +79,8 @@ jobs:
           gpg_passphrase: ${{ secrets.gpg_passphrase }}
           nexus_username: ${{ secrets.nexus_username }}
           nexus_password: ${{ secrets.nexus_password }}
+          maven_goals_phases: deploy
+          maven_args: -DskipTests  # Can't test on GitHub, libusb won't load, and no Push connected.
 
   succeed_if_skipped:
     name: Skipping CI

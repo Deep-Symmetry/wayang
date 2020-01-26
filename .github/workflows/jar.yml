@@ -71,17 +71,6 @@ jobs:
           github_token: ${{ github.token }}
           initial_mrkdwn: ${{ env.initial_description }}
 
-      - name: Deploy to Maven Central
-        if: success()
-        uses: Deep-Symmetry/action-maven-publish@v1
-        with:
-          gpg_private_key: ${{ secrets.gpg_private_key }}
-          gpg_passphrase: ${{ secrets.gpg_passphrase }}
-          nexus_username: ${{ secrets.nexus_username }}
-          nexus_password: ${{ secrets.nexus_password }}
-          maven_goals_phases: deploy
-          maven_args: -DskipTests  # Can't test on GitHub, libusb won't load, and no Push connected.
-
   succeed_if_skipped:
     name: Skipping CI
     runs-on: ubuntu-latest

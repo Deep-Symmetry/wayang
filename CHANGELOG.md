@@ -6,7 +6,10 @@ This change log follows the conventions of
 
 ## [Unreleased][unreleased]
 
-Nothing so far.
+### Fixed
+
+- Updated junit library to address a security risk (applicable only
+  during development).
 
 ## [0.1.8] - 2020-01-26
 

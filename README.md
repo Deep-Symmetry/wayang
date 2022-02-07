@@ -9,7 +9,7 @@ images.
 
 [![Wayang photo](assets/Wayang_Pandawa.jpg)](https://commons.wikimedia.org/wiki/File:Wayang_Pandawa.jpg)
 
-[![License](https://img.shields.io/badge/License-Eclipse%20Public%20License%201.0-blue.svg)](#license)
+[![License](https://img.shields.io/github/license/Deep-Symmetry/wayang?color=blue)](#license)
 
 ## Dependencies
 

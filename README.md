@@ -142,8 +142,7 @@ GifSequenceWriter by [Elliot Kroo](http://elliot.kroo.net/software/java/GifSeque
 ## License
 
 <a href="http://deepsymmetry.org"><img align="right" alt="Deep Symmetry"
- src="doc/assets/DS-logo-github.png" width="250" height="150"></a>
-
+ src="assets/DS-logo-github.png" width="250" height="150"></a>
 
 Copyright © 2016–2022 [Deep Symmetry, LLC](http://deepsymmetry.org)
 

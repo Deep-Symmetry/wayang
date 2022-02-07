@@ -141,14 +141,15 @@ GifSequenceWriter by [Elliot Kroo](http://elliot.kroo.net/software/java/GifSeque
 
 ## License
 
-<img align="right" alt="Deep Symmetry" src="assets/DS-logo-bw-200-padded-left.png">
+<a href="http://deepsymmetry.org"><img align="right" alt="Deep Symmetry"
+ src="assets/DS-logo-github.png" width="250" height="150"></a>
 
-Copyright © 2016–2020 [Deep Symmetry, LLC](http://deepsymmetry.org)
 
-Distributed under the
-[Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php).
-By using this software in any fashion, you are agreeing to be bound by
-the terms of this license. You must not remove this notice, or any
-other, from this software. A copy of the license can be found in
-[assets/epl-v10.html](https://rawgit.com/brunchboy/wayang/master/assets/epl-v10.html)
-within this project.
+Copyright © 2016–2022 [Deep Symmetry, LLC](http://deepsymmetry.org)
+
+Distributed under the [Eclipse Public License
+2.0](https://opensource.org/licenses/EPL-2.0). By using this software
+in any fashion, you are agreeing to be bound by the terms of this
+license. You must not remove this notice, or any other, from this
+software. A copy of the license can be found in
+[LICENSE.md](LICENSE.md) within this project.
